@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'url.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'kappital',
+        'NAME': 'url',
         'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
