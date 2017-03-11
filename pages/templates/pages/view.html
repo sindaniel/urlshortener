@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+{% if messages %}
+
+        <div class="row">
+            <div class="col-md-12">
+                {% for message in messages %}
+                    <!-- <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li> -->
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      {{ message.message }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+{% endif %}
+
+
+
+
+<div class="jumbotron">
+    <h2>Analytics data for <a href="http://localhost:8000/{{obj.code}}" target='_blank'>localhost:8000/{{obj.code}}</a></h2>
+    <p>Created {{ obj.created|timesince }} ago</p>
+    <p>Original URL:  <a href="{{obj.url}}" target='_blank'>{{obj.url}}</a></p>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h3>Total Clicks     {{ obj.analitys.count }}</h3>
+    </div>
+    <div class="col-md-12">
+        <div id="chart_div" style="width: 100%; height: 500px;"></div>
+    </div>
+    <div class="col-md-6">
+        <div id="piechart" style="width: 100%; height: 500px;"></div>
+    </div>
+
+    <div class="col-md-6">
+        <div id="piechartOS" style="width: 100%; height: 500px;"></div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+
+        jsonB = '{{browsers}}';
+        jsonO = '{{os}}';
+        jsonM = '{{months}}';
+        jsonB = JSON.parse(jsonB.replace(/&quot;/g,'"'));
+        jsonO = JSON.parse(jsonO.replace(/&quot;/g,'"'));
+        jsonM = JSON.parse(jsonM.replace(/&quot;/g,'"'));
+        var months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+
+
+        dataC = []
+        dataCOS = []
+        dataM = []
+        dataC.push(    ['Browser', 'Count'])
+        dataCOS.push(    ['OS', 'Count'])
+        dataM.push(    ['Month', 'Clicks'])
+        for (var i in jsonB) {
+            dataC.push( [jsonB[i].browser, jsonB[i].dcount] )
+        }
+
+
+        for (var i in jsonO) {
+            dataCOS.push( [jsonO[i].os, jsonO[i].dcount] )
+        }
+
+        for (var i in jsonM) {
+            dataM.push( [ months[jsonM[i].month], jsonM[i].count] )
+        }
+
+
+
+
+
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(drawChartOS);
+        google.charts.setOnLoadCallback(drawChartMonth);
+
+
+
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable(dataC);
+
+            var options = {
+              title: 'Browsers',
+               pieHole: 0.4,
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+            chart.draw(data, options);
+        }
+
+        function drawChartOS() {
+            var data = google.visualization.arrayToDataTable(dataCOS);
+
+            var options = {
+              title: 'OS',
+               pieHole: 0.4,
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechartOS'));
+
+            chart.draw(data, options);
+        }
+
+
+
+
+        function drawChartMonth() {
+            var data = google.visualization.arrayToDataTable(dataM);
+
+            var options = {
+              title: 'Clicks by Month',
+              hAxis: {title: 'Month',  titleTextStyle: {color: '#333'}},
+              vAxis: {minValue: 0, format:'0'}
+            };
+
+            var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+      }
+
+
+    </script>
+
+
+
+
+
+
+{% endblock content %}

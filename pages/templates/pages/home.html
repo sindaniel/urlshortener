@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+{% if messages %}
+
+        <div class="row">
+            <div class="col-md-12">
+                {% for message in messages %}
+                    <!-- <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li> -->
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      {{ message.message }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+{% endif %}
+
+
+<div class="jumbotron">
+    <h2>Simplify your links</h2>
+    <form method="POST" id="formCreate" action="{% url 'pages:create' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="text" name="url" class="form-control"  placeholder="Your original URL here">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <input type="submit" value="Shorten Url" class="btn btn-primary">
+            </div>
+        </div>
+    </form>
+    <p>All URLs and click analytics are public and can be accessed by anyone</p>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+
+        <table class="table">
+            <tr>
+                <th>Original URL</th>
+                <th>Created</th>
+                <th>Short URL</th>
+                <th>All Clicks</th>
+                <th></th>
+            </tr>
+            {% for obj in object_list %}
+            <tr>
+                <td>
+                    <a href="{{ obj.url }}" target="_blank">{{ obj.url|slice:":100" }}</a>
+                </td>
+                <td>
+                    {{ obj.created|timesince }} ago
+                </td>
+                <td>
+                    <a href="http://localhost:8000/{{ obj.code }}" target="_blank">localhost:8000/{{ obj.code }}</a>
+                </td>
+                <td>
+                    {{ obj.analitys.count }}
+                </td>
+                <td>
+                    <div class="dropup">
+                        <button class="btn btn-default dropdown-toggle" type="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Actions
+                        <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" >
+                        <li><a href="{%  url 'pages:view' obj.code %}">View</a></li>
+                        <li><a href="#">Delete</a></li>
+                        <li><a href="#">Qr Code</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+
+
+            {% endfor %}
+        </table>
+
+
+    </div>
+</div>
+
+
+
+
+{% endblock content %}
