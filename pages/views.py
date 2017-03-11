@@ -100,11 +100,7 @@ def url_redirection(request, u):
 
     ua_string = request.META['HTTP_USER_AGENT']
     user_agent = parse(ua_string)
-
-
-
-
-
+    
     uA = UrlAnalitys()
     uA.url = qs
     uA.browser = user_agent.browser.family

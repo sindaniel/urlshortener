@@ -14,8 +14,7 @@ class Url(models.Model):
 
 class UrlAnalitys(models.Model):
     url     = models.ForeignKey(Url, related_name='analitys')
-    browser  = models.CharField(max_length=255)
-    os  = models.CharField(max_length=255)
-    ip  = models.CharField(max_length=20)
-    created  = models.DateTimeField(auto_now_add=True)
-    
+    browser = models.CharField(max_length=255)
+    os      = models.CharField(max_length=255)
+    ip      = models.CharField(max_length=20)
+    created = models.DateTimeField(auto_now_add=True)
